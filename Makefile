@@ -17,7 +17,7 @@ P01-Triangle :
 	make --no-print-directory -C P01-Triangle -f Makefile
 
 P02-RotatingQuad : 
-	@echo "=== Building P01-Triangle ==="
+	@echo "=== Building P02-RotatingQuad ==="
 	make --no-print-directory -C P02-RotatingQuad -f Makefile
 
 clean :
