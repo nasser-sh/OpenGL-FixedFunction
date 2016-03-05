@@ -19,6 +19,7 @@ public:
     bool shouldQuit(SDL_Event const &appEvent) override;
 
 private:
+    GLenum primitive_;
     float currentAngle_;
     bool  isMoving_;
 };
