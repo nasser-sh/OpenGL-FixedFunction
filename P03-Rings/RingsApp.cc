@@ -8,6 +8,7 @@
 RingsApp::RingsApp(int majorVersion, int minorVersion, int depthBufferSize)
 : GLApp(majorVersion, minorVersion, depthBufferSize)
 , torus_(120, 120)
+, viewAngle_(0.0f)
 {  
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 

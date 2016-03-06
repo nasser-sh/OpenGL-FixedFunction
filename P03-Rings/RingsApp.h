@@ -22,9 +22,9 @@ public:
     bool shouldQuit(SDL_Event const &appEvent) override;
 
 private:
-    float viewAngle_;
-    UnitTorus torus_;
     std::vector<Ring> rings_;
+    UnitTorus torus_;
+    float viewAngle_;
 };
 
 #endif // ROTATING_QUAD_APP_H
