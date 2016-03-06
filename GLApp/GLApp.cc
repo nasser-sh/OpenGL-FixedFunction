@@ -48,6 +48,7 @@ GLApp::GLApp(int majorVersion, int minorVersion, int depthBufferSize)
 
 void GLApp::start()
 {
+    resize(1280, 960);
     do {
         update(millisElapsed());
         draw();
