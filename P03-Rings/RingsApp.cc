@@ -10,7 +10,7 @@ RingsApp::RingsApp(int majorVersion, int minorVersion, int depthBufferSize)
 , torus_(120, 120)
 , viewAngle_(0.0f)
 {  
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.0f, 0.25f, 0.35f, 1.0f);
 
     glEnable(GL_CULL_FACE);
     glFrontFace(GL_CW);
@@ -26,17 +26,27 @@ RingsApp::RingsApp(int majorVersion, int minorVersion, int depthBufferSize)
         0.0f, 0.0f, -1.0f,
         0.0f, 1.0f,  0.0f);
 
+    glShadeModel(GL_SMOOTH);
+    glEnable(GL_LIGHTING);
+
+    GLfloat lightPosition[] = {0.0f, 3.0f, 0.0f, 1.0f};  
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+
+    GLfloat diffuseLight[] = {1.0f, 1.0f, 1.0f, 1.0f};
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
+    glEnable(GL_LIGHT0);
+
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
 
     rings_ = std::vector<Ring> {
-        Ring({ 0.0f, -2.0f}, {1.0f, 0.0f, 0.0f}, 15000.0f), 
-        Ring({ 3.0f, -1.0f}, {0.0f, 1.0f, 0.0f},  5000.0f), 
-        Ring({ 2.0f,  2.0f}, {0.0f, 0.0f, 1.0f},  3000.0f), 
-        Ring({ 1.0f,  5.0f}, {1.0f, 1.0f, 0.0f}, 12000.0f), 
-        Ring({-2.0f,  1.0f}, {0.0f, 1.0f, 1.0f},  4000.0f), 
-        Ring({-5.0f,  3.0f}, {1.0f, 0.0f, 1.0f},  8000.0f), 
+        Ring({ 0.0f, -2.0f}, {0.5f, 0.0f, 0.0f, 1.0f}, 15000.0f), 
+        Ring({ 3.0f, -1.0f}, {0.0f, 0.5f, 0.0f, 1.0f},  5000.0f), 
+        Ring({ 2.0f,  2.0f}, {0.0f, 0.0f, 0.5f, 1.0f},  3000.0f), 
+        Ring({ 1.0f,  5.0f}, {0.5f, 0.5f, 0.0f, 1.0f}, 12000.0f), 
+        Ring({-2.0f,  1.0f}, {0.0f, 0.5f, 0.5f, 1.0f},  4000.0f), 
+        Ring({-5.0f,  3.0f}, {0.5f, 0.0f, 0.5f, 1.0f},  8000.0f), 
     };
 }
 
@@ -61,7 +71,7 @@ void RingsApp::draw()
         glTranslatef(ring.position().x, 0.0f, ring.position().z);
         glRotatef(ring.currentAngle(), 0.0f, 1.0f, 0.0f);
         glScalef(0.5f, 0.5f, 0.5f);
-        glColor3fv((GLfloat*)(&ring.color()));
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, (GLfloat*)(&ring.color()));
         torus_.draw();
         glPopMatrix();
     }

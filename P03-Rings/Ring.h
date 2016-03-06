@@ -17,6 +17,7 @@ struct Color
     GLfloat r;
     GLfloat g;
     GLfloat b;
+    GLfloat a;
 };
 
 
