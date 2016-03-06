@@ -51,10 +51,6 @@ void RingsApp::draw()
     glClear(GL_COLOR_BUFFER_BIT);
 
     glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    
-    // View transform
-
 
     // Model transform
     for (auto &ring : rings_) {
@@ -66,8 +62,6 @@ void RingsApp::draw()
         torus_.draw();
         glPopMatrix();
     }
-    
-    glPopMatrix();
 }
 
 
