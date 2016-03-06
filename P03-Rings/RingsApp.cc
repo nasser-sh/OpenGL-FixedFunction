@@ -1,21 +1,27 @@
 #include "RingsApp.h"
 #include <GL/gl.h>
+#include <GL/glu.h>
 
 
 RingsApp::RingsApp(int majorVersion, int minorVersion, int depthBufferSize)
 : GLApp(majorVersion, minorVersion, depthBufferSize)
-, torus_(60, 60)
+, torus_(120, 120)
 , currentTorusAngle_(0.0f)
 {  
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
     glEnable(GL_CULL_FACE);
-    glFrontFace(GL_CCW);
+    glFrontFace(GL_CW);
     glCullFace(GL_BACK);
 
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    gluPerspective(90.0f, float(1280) / 960, 0.1f, 100.0f);
 }
 
 
@@ -31,7 +37,18 @@ void RingsApp::draw()
 
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
+    
+    // View transform
+    gluLookAt(
+        0.0f, 0.0f,  0.0f,
+        0.0f, 0.0f, -1.0f,
+        0.0f, 1.0f,  0.0f);
+
+    // Model transform
+    glTranslatef(0.0f, 0.0f, -1.0f);
     glRotatef(currentTorusAngle_, 0.0f, 1.0f, 0.0f);
+    glScalef(0.5f, 0.5f, 0.5f);
+    
     torus_.draw();
     glPopMatrix();
 }
@@ -39,6 +56,9 @@ void RingsApp::draw()
 
 void RingsApp::resize(int width, int height)
 {
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(90.0f, float(width) / height, 0.1f, 200.0f);
     glViewport(0, 0, width, height);
 }
 

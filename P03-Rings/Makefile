@@ -3,7 +3,7 @@ CXX = g++
 CXX_FLAGS = -std=c++1y -Wall
 INCLUDES = -I../GLApp
 LD_FLAGS = -L../GLApp/lib
-LIBS = -lGLApp -lSDL2 -lGLEW -lGL
+LIBS = -lGLApp -lSDL2 -lGLEW -lGLU -lGL
 
 CXX_FILES = $(wildcard *.cc)
 OBJ_DIR = obj
