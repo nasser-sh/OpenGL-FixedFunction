@@ -16,6 +16,8 @@ RingsApp::RingsApp(int majorVersion, int minorVersion, int depthBufferSize)
     glFrontFace(GL_CW);
     glCullFace(GL_BACK);
 
+    glEnable(GL_DEPTH_TEST);
+
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
@@ -33,8 +35,8 @@ RingsApp::RingsApp(int majorVersion, int minorVersion, int depthBufferSize)
         Ring({ 3.0f, -1.0f}, {0.0f, 1.0f, 0.0f},  5000.0f), 
         Ring({ 2.0f,  2.0f}, {0.0f, 0.0f, 1.0f},  3000.0f), 
         Ring({ 1.0f,  5.0f}, {1.0f, 1.0f, 0.0f}, 12000.0f), 
-        Ring({-5.0f,  3.0f}, {1.0f, 0.0f, 1.0f},  8000.0f), 
         Ring({-2.0f,  1.0f}, {0.0f, 1.0f, 1.0f},  4000.0f), 
+        Ring({-5.0f,  3.0f}, {1.0f, 0.0f, 1.0f},  8000.0f), 
     };
 }
 
@@ -49,7 +51,7 @@ void RingsApp::update(float millisElapsed)
 
 void RingsApp::draw()
 {
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_MODELVIEW);
 
