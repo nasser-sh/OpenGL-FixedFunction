@@ -21,7 +21,6 @@ private:
     void setIndices(int majorDivisions, int minorDivisions);
 
     std::vector<GLfloat> attributes_;
-    std::vector<GLfloat> normals_;
     std::vector<GLushort> indices_;
     float minorRadius_;
 };
