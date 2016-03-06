@@ -1,12 +1,13 @@
 #include "RingsApp.h"
+#include "Maths.h"
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <cmath>
 
 
 RingsApp::RingsApp(int majorVersion, int minorVersion, int depthBufferSize)
 : GLApp(majorVersion, minorVersion, depthBufferSize)
 , torus_(120, 120)
-, currentTorusAngle_(0.0f)
 {  
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -17,17 +18,31 @@ RingsApp::RingsApp(int majorVersion, int minorVersion, int depthBufferSize)
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
+    gluLookAt(
+        0.0f, 0.0f,  0.0f,
+        0.0f, 0.0f, -1.0f,
+        0.0f, 1.0f,  0.0f);
 
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
-    gluPerspective(90.0f, float(1280) / 960, 0.1f, 100.0f);
+
+    rings_ = std::vector<Ring> {
+        Ring({ 0.0f, -2.0f}, {1.0f, 0.0f, 0.0f}, 15000.0f), 
+        Ring({ 3.0f, -1.0f}, {0.0f, 1.0f, 0.0f},  5000.0f), 
+        Ring({ 2.0f,  2.0f}, {0.0f, 0.0f, 1.0f},  3000.0f), 
+        Ring({ 1.0f,  5.0f}, {1.0f, 1.0f, 0.0f}, 12000.0f), 
+        Ring({-5.0f,  3.0f}, {1.0f, 0.0f, 1.0f},  8000.0f), 
+        Ring({-2.0f,  1.0f}, {0.0f, 1.0f, 1.0f},  4000.0f), 
+    };
 }
 
 
 void RingsApp::update(float millisElapsed)
 {  
-    currentTorusAngle_ += millisElapsed / 15000.0f * 360.0f; 
+    for (auto &ring : rings_) {
+        ring.updateRotation(millisElapsed);
+    } 
 }
 
 
@@ -39,17 +54,19 @@ void RingsApp::draw()
     glPushMatrix();
     
     // View transform
-    gluLookAt(
-        0.0f, 0.0f,  0.0f,
-        0.0f, 0.0f, -1.0f,
-        0.0f, 1.0f,  0.0f);
+
 
     // Model transform
-    glTranslatef(0.0f, 0.0f, -1.0f);
-    glRotatef(currentTorusAngle_, 0.0f, 1.0f, 0.0f);
-    glScalef(0.5f, 0.5f, 0.5f);
+    for (auto &ring : rings_) {
+        glPushMatrix();
+        glTranslatef(ring.position().x, 0.0f, ring.position().z);
+        glRotatef(ring.currentAngle(), 0.0f, 1.0f, 0.0f);
+        glScalef(0.5f, 0.5f, 0.5f);
+        glColor3fv((GLfloat*)(&ring.color()));
+        torus_.draw();
+        glPopMatrix();
+    }
     
-    torus_.draw();
     glPopMatrix();
 }
 
@@ -58,7 +75,7 @@ void RingsApp::resize(int width, int height)
 {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(90.0f, float(width) / height, 0.1f, 200.0f);
+    gluPerspective(70.0f, float(width) / height, 0.1f, 10.0f);
     glViewport(0, 0, width, height);
 }
 
@@ -66,6 +83,33 @@ void RingsApp::resize(int width, int height)
 void RingsApp::handleEvent(SDL_Event &appEvent)
 {
     SDL_PollEvent(&appEvent);
+
+    if (appEvent.type == SDL_KEYDOWN) {
+        bool  needsUpdate = false;
+    
+        switch(appEvent.key.keysym.sym) {
+        case SDLK_RIGHT:
+            needsUpdate = true;
+            viewAngle_ = std::fmod(viewAngle_ + 0.02f, twoPi());
+            break;
+        case SDLK_LEFT:
+            needsUpdate = true;
+            viewAngle_ -= 0.02f;
+            if (viewAngle_ < 0.0f) {
+                viewAngle_ += twoPi();
+            }
+            break;
+        }
+
+        if (needsUpdate) {
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+            gluLookAt(
+                0.0f, 0.0f, 0.0f,
+                std::sin(viewAngle_), 0.0f, -std::cos(viewAngle_),
+                0.0f, 1.0f, 0.0f);
+        }
+    }
 }
 
 

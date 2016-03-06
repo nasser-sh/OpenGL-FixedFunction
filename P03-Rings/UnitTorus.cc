@@ -1,11 +1,6 @@
 #include "UnitTorus.h"
+#include "Maths.h"
 #include <cmath>
-
-
-constexpr float twoPi()
-{
-    return 2.0f * 3.141592f;
-}
 
 
 /** \brief Return circle vertices in its own model space, in YZ plane
@@ -115,7 +110,6 @@ void UnitTorus::setIndices(int majorDivisionCount, int minorDivisionCount)
 
 void UnitTorus::draw() const
 {
-    glColor3f(1.0f, 0.0f, 0.0f);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
     glDrawElements(GL_TRIANGLE_STRIP, indices_.size(), GL_UNSIGNED_SHORT, &indices_[0]);

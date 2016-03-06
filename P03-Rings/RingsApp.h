@@ -3,8 +3,10 @@
 
 
 #include <GL/gl.h>
+#include <vector>
 #include "GLApp.h"
 #include "UnitTorus.h"
+#include "Ring.h"
 
 
 class RingsApp : public GLApp
@@ -20,8 +22,9 @@ public:
     bool shouldQuit(SDL_Event const &appEvent) override;
 
 private:
+    float viewAngle_;
     UnitTorus torus_;
-    float currentTorusAngle_;
+    std::vector<Ring> rings_;
 };
 
 #endif // ROTATING_QUAD_APP_H
