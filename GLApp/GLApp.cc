@@ -1,20 +1,5 @@
 #include "GLApp.h"
-
-#include <GL/glew.h>
 #include <iostream>
-
-
-void loadOpenglFunctions()
-{
-    glewExperimental = GL_TRUE;
-    GLenum glewStatus = glewInit();
-
-    if(glewStatus != GLEW_OK)
-    {
-        std::cerr << "Failed to initialize Glew\n";
-        exit(EXIT_FAILURE);
-    }
-}
 
 
 void printSdlError()
@@ -56,8 +41,6 @@ GLApp::GLApp(int majorVersion, int minorVersion, int depthBufferSize)
     {
         printSdlError();
     }
-
-    loadOpenglFunctions();
     
     currentTime_ = std::chrono::high_resolution_clock::now();
 }
