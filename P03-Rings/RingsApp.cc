@@ -3,6 +3,15 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <cmath>
+#include <tuple>
+
+
+std::vector<std::pair<float, float>> coeffs {
+    {1.0f, 1.0f},
+    {-1.0f, 1.0f},
+    {-1.0f, -1.0f},
+    {1.0f, -1.0f}
+};
 
 
 RingsApp::RingsApp(int majorVersion, int minorVersion, int depthBufferSize)
@@ -41,12 +50,31 @@ RingsApp::RingsApp(int majorVersion, int minorVersion, int depthBufferSize)
     glLoadIdentity();
 
     rings_ = std::vector<Ring> {
-        Ring({ 0.0f, -2.0f}, {0.5f, 0.0f, 0.0f, 1.0f}, 15000.0f), 
-        Ring({ 3.0f, -1.0f}, {0.0f, 0.5f, 0.0f, 1.0f},  5000.0f), 
-        Ring({ 2.0f,  2.0f}, {0.0f, 0.0f, 0.5f, 1.0f},  3000.0f), 
-        Ring({ 1.0f,  5.0f}, {0.5f, 0.5f, 0.0f, 1.0f}, 12000.0f), 
-        Ring({-2.0f,  1.0f}, {0.0f, 0.5f, 0.5f, 1.0f},  4000.0f), 
-        Ring({-5.0f,  3.0f}, {0.5f, 0.0f, 0.5f, 1.0f},  8000.0f), 
+        Ring({ 1.0f,  1.0f}, {0.5f, 0.0f, 0.0f, 1.0f}, 15000.0f), 
+        Ring({ 1.0f,  3.0f}, {0.0f, 0.5f, 0.0f, 1.0f},  3000.0f), 
+        Ring({ 1.0f,  5.0f}, {0.0f, 0.0f, 0.5f, 1.0f},  4000.0f), 
+        Ring({ 1.0f,  7.0f}, {0.5f, 0.5f, 0.0f, 1.0f}, 10000.0f), 
+        Ring({ 1.0f,  9.0f}, {0.5f, 0.0f, 0.5f, 1.0f},  5000.0f), 
+        Ring({ 3.0f,  1.0f}, {0.0f, 0.5f, 0.5f, 1.0f},  2000.0f), 
+        Ring({ 3.0f,  3.0f}, {0.5f, 0.5f, 0.5f, 1.0f},  6000.0f), 
+        Ring({ 3.0f,  5.0f}, {0.5f, 0.0f, 0.0f, 1.0f},  1000.0f), 
+        Ring({ 3.0f,  7.0f}, {0.0f, 0.5f, 0.0f, 1.0f}, 12000.0f), 
+        Ring({ 3.0f,  9.0f}, {0.0f, 0.0f, 0.5f, 1.0f}, 24000.0f), 
+        Ring({ 5.0f,  1.0f}, {0.5f, 0.5f, 0.0f, 1.0f},  5000.0f), 
+        Ring({ 5.0f,  3.0f}, {0.5f, 0.0f, 0.5f, 1.0f}, 14000.0f), 
+        Ring({ 5.0f,  5.0f}, {0.0f, 0.5f, 0.5f, 1.0f},  5000.0f), 
+        Ring({ 5.0f,  7.0f}, {0.5f, 0.5f, 0.5f, 1.0f},  4000.0f), 
+        Ring({ 5.0f,  9.0f}, {0.5f, 0.0f, 0.0f, 1.0f},  7000.0f), 
+        Ring({ 7.0f,  1.0f}, {0.0f, 0.5f, 0.0f, 1.0f},   500.0f), 
+        Ring({ 7.0f,  3.0f}, {0.0f, 0.0f, 0.5f, 1.0f}, 12000.0f), 
+        Ring({ 7.0f,  5.0f}, {0.5f, 0.5f, 0.0f, 1.0f}, 12000.0f), 
+        Ring({ 7.0f,  7.0f}, {0.5f, 0.0f, 0.5f, 1.0f}, 16000.0f), 
+        Ring({ 7.0f,  9.0f}, {0.0f, 0.5f, 0.5f, 1.0f},  4000.0f), 
+        Ring({ 9.0f,  1.0f}, {0.5f, 0.5f, 0.5f, 1.0f},  7000.0f), 
+        Ring({ 9.0f,  3.0f}, {0.5f, 0.0f, 0.0f, 1.0f}, 17000.0f), 
+        Ring({ 9.0f,  5.0f}, {0.0f, 0.5f, 0.5f, 1.0f},  5000.0f), 
+        Ring({ 9.0f,  7.0f}, {0.5f, 0.5f, 0.5f, 1.0f}, 12000.0f), 
+        Ring({ 9.0f,  9.0f}, {0.5f, 0.0f, 0.0f, 1.0f},  4000.0f), 
     };
 }
 
@@ -66,14 +94,16 @@ void RingsApp::draw()
     glMatrixMode(GL_MODELVIEW);
 
     // Model transform
-    for (auto &ring : rings_) {
-        glPushMatrix();
-        glTranslatef(ring.position().x, 0.0f, ring.position().z);
-        glRotatef(ring.currentAngle(), 0.0f, 1.0f, 0.0f);
-        glScalef(0.5f, 0.5f, 0.5f);
-        glMaterialfv(GL_FRONT, GL_DIFFUSE, (GLfloat*)(&ring.color()));
-        torus_.draw();
-        glPopMatrix();
+    for (auto const &coeffPair : coeffs) {
+        for (auto &ring : rings_) {
+            glPushMatrix();
+            glTranslatef(coeffPair.first * ring.position().x, 0.0f, coeffPair.second * ring.position().z);
+            glRotatef(ring.currentAngle(), 0.0f, 1.0f, 0.0f);
+            glScalef(0.5f, 0.5f, 0.5f);
+            glMaterialfv(GL_FRONT, GL_DIFFUSE, (GLfloat*)(&ring.color()));
+            torus_.draw();
+            glPopMatrix();
+        }
     }
 }
 
@@ -82,7 +112,7 @@ void RingsApp::resize(int width, int height)
 {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(70.0f, float(width) / height, 0.1f, 10.0f);
+    gluPerspective(70.0f, float(width) / height, 0.5f, 15.0f);
     glViewport(0, 0, width, height);
 }
 
