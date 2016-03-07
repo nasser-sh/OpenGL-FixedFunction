@@ -112,7 +112,7 @@ void RingsApp::resize(int width, int height)
 {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(70.0f, float(width) / height, 0.5f, 15.0f);
+    gluPerspective(70.0f, float(width) / height, 0.5f, 25.0f);
     glViewport(0, 0, width, height);
 }
 
