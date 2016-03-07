@@ -95,7 +95,7 @@ void RingsApp::draw()
 
     // Model transform
     for (auto const &coeffPair : coeffs) {
-        for (auto &ring : rings_) {
+        for (auto const &ring : rings_) {
             glPushMatrix();
             glTranslatef(coeffPair.first * ring.position().x, 0.0f, coeffPair.second * ring.position().z);
             glRotatef(ring.currentAngle(), 0.0f, 1.0f, 0.0f);
