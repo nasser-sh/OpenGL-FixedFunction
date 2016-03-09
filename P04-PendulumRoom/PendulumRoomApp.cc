@@ -5,7 +5,7 @@
 
 PendulumRoomApp::PendulumRoomApp(int majorVersion, int minorVersion, int depthBufferSize)
 : GLApp(majorVersion, minorVersion, depthBufferSize)
-, pendulum_(Vector3D(0.0f, 0.0f, -10.0f), 5.0f, 60.0f)
+, pendulum_(Vector3D(0.0f, 0.0f, -10.0f), 2.0f, 60.0f)
 { 
     glClearColor(0.0f, 0.25f, 0.35f, 1.0f);
 

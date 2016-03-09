@@ -42,6 +42,7 @@ void Pendulum::draw() const
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glTranslatef(position_.x, position_.y, position_.z);
+    glScalef(0.5f, 0.5f, 0.5f);
     bobMesh_.draw();
     glPopMatrix();
 }
