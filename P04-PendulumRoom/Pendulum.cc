@@ -17,6 +17,8 @@ Pendulum::Pendulum(Vector3D const &position, float radius, float amplitude)
 , amplitude_(radians(amplitude))
 { 
     naturalPeriod_ = twoPi() * std::sqrt(radius_ / g());
+
+    glEnable(GL_LIGHT0);
 }
 
 
@@ -42,10 +44,24 @@ void Pendulum::draw() const
 {
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
+
+    // Position pendulum ball
     glTranslatef(position_.x, position_.y, position_.z);
     glRotatef(degrees(currentAngle()), 0.0f, 0.0f, 1.0f);
     glTranslatef(0.0f, -radius_, 0.0f);
     glScalef(0.2f, 0.2f, 0.2f);
+    
+    // Light properties
+    GLfloat  materialEmission[] = {1.0f, 0.93f, 0.83f, 1.0f};
+    GLfloat *lightDiffuse = materialEmission;
+    GLfloat  lightAmbient[] = {0.2f, 0.2f, 0.2f, 1.0f};
+    GLfloat  lightPosition[] = {0.0f, 0.0f, 0.0f, 1.0f}; // origin of model space
+
+    glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+
     bobMesh_.draw();
     glPopMatrix();
 }

@@ -5,13 +5,13 @@
 
 PendulumRoomApp::PendulumRoomApp(int majorVersion, int minorVersion, int depthBufferSize)
 : GLApp(majorVersion, minorVersion, depthBufferSize)
-, pendulum_(Vector3D(0.0f, 3.0f, -10.0f), 0.5f, 60.0f)
+, pendulum_(Vector3D(0.0f, 3.0f, -10.0f), 0.2f, 60.0f)
+, ball_(Vector3D(-1.0f, 0.5f, -11.0f), 0.5f)
 { 
     glClearColor(0.0f, 0.25f, 0.35f, 1.0f);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
 
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
@@ -36,6 +36,7 @@ void PendulumRoomApp::draw()
         0.0f, 0.0f, -1.0f,
         0.0f, 1.0f,  0.0f);
     pendulum_.draw();
+    ball_.draw();
 }
 
 
@@ -43,7 +44,7 @@ void PendulumRoomApp::resize(int width, int height)
 {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(90.0f, float(width) / height, 1.0f, 25.0f);
+    gluPerspective(70.0f, float(width) / height, 1.0f, 25.0f);
     glViewport(0, 0, width, height);
 }
 

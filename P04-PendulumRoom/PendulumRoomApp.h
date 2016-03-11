@@ -4,6 +4,7 @@
 
 #include "GLApp.h"
 #include "Pendulum.h"
+#include "Ball.h"
 
 
 class PendulumRoomApp : public GLApp
@@ -20,7 +21,7 @@ public:
 
 private:
     Pendulum pendulum_;
- //   UnitSphere sphere_;
+    Ball ball_;
 };
 
 
