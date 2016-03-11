@@ -21,8 +21,11 @@ public:
     void draw() const;
 
 private:    
+    float currentAngle() const;
+
     UnitSphere bobMesh_;
     Vector3D position_;
+    Vector3D bobRelativePosition_;
 
     float timeStamp_;
     float naturalPeriod_;

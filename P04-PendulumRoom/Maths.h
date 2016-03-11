@@ -22,9 +22,15 @@ constexpr float twoPi()
 }
 
 
-inline float radians(float degrees)
+inline float radians(float deg)
 {
-    return degrees * pi() / 180.0f;
+    return deg * pi() / 180.0f;
+}
+
+
+inline float degrees(float rad)
+{
+    return rad * 180.0f / pi();
 }
 
 
