@@ -2,6 +2,7 @@
 #include "Maths.h"
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <glm/gtc/type_ptr.hpp>
 #include <cmath>
 #include <tuple>
 
@@ -17,7 +18,7 @@ std::vector<std::pair<float, float>> coeffs {
 RingsApp::RingsApp(int majorVersion, int minorVersion, int depthBufferSize)
 : GLApp(majorVersion, minorVersion, depthBufferSize)
 , torus_(120, 120)
-, viewAngle_(0.0f)
+, camera_({0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f, 0.0f}, &panningController_)
 {  
     glClearColor(0.0f, 0.25f, 0.35f, 1.0f);
 
@@ -30,10 +31,6 @@ RingsApp::RingsApp(int majorVersion, int minorVersion, int depthBufferSize)
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
-    gluLookAt(
-        0.0f, 0.0f,  0.0f,
-        0.0f, 0.0f, -1.0f,
-        0.0f, 1.0f,  0.0f);
 
     glShadeModel(GL_SMOOTH);
     glEnable(GL_LIGHTING);
@@ -92,6 +89,8 @@ void RingsApp::draw()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glMultMatrixf(glm::value_ptr(camera_.cameraSpaceTransform()));
 
     // Model transform
     for (auto const &coeffPair : coeffs) {
@@ -105,6 +104,8 @@ void RingsApp::draw()
             glPopMatrix();
         }
     }
+
+    glPopMatrix();
 }
 
 
@@ -121,30 +122,38 @@ void RingsApp::handleEvent(SDL_Event &appEvent)
 {
     SDL_PollEvent(&appEvent);
 
+    float distance = 0.02f;
+
     if (appEvent.type == SDL_KEYDOWN) {
-        bool  needsUpdate = false;
-    
         switch(appEvent.key.keysym.sym) {
         case SDLK_RIGHT:
-            needsUpdate = true;
-            viewAngle_ = std::fmod(viewAngle_ + 0.02f, twoPi());
+            camera_.moveRight(distance);
             break;
         case SDLK_LEFT:
-            needsUpdate = true;
-            viewAngle_ -= 0.02f;
-            if (viewAngle_ < 0.0f) {
-                viewAngle_ += twoPi();
-            }
+            camera_.moveLeft(distance);
             break;
-        }
+        case SDLK_UP:
+            camera_.moveUp(distance);
+            break;
+        case SDLK_DOWN:
+            camera_.moveDown(distance);
+            break;
 
-        if (needsUpdate) {
-            glMatrixMode(GL_MODELVIEW);
-            glLoadIdentity();
-            gluLookAt(
-                0.0f, 0.0f, 0.0f,
-                std::sin(viewAngle_), 0.0f, -std::cos(viewAngle_),
-                0.0f, 1.0f, 0.0f);
+        // Rotation mode
+        case SDLK_r:
+            camera_.setController(&rotatingController_);
+            break;
+        case SDLK_p:
+            camera_.setController(&panningController_);
+            break;
+
+        // Wireframe or Polygon
+        case SDLK_l:
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            break;
+        case SDLK_t:
+            glPolygonMode(GL_FRONT_AND_BACK, GL_POLYGON);
+            break;
         }
     }
 }

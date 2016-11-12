@@ -7,6 +7,7 @@
 #include "GLApp.h"
 #include "UnitTorus.h"
 #include "Ring.h"
+#include "Camera.h"
 
 
 class RingsApp : public GLApp
@@ -24,7 +25,10 @@ public:
 private:
     std::vector<Ring> rings_;
     UnitTorus torus_;
-    float viewAngle_;
+
+    PanningController panningController_;
+    RotatingController rotatingController_; 
+    Camera camera_;
 };
 
 #endif // ROTATING_QUAD_APP_H
