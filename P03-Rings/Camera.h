@@ -1,7 +1,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 #include <glm/vec3.hpp>
-#include <glm/gtx/transform.hpp>
+#include <glm/geometric.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 
@@ -81,13 +81,19 @@ class RotatingController : public CameraController
 public: 
     void moveRight(Camera &camera, float distance) override 
     {
-        /*
-        glm::vec4 v = glm::vec4(camera.target_ - camera.position_, 1.0f);
-        glm::mat4 transformation = glm::rotate(-distance, glm::vec3(0.0f, 1.0f, 0.0f));
-        glm::vec4 sumvector = glm::vec4(camera.position_, 1.0f) + transformation * v;
-        glm::vec3 offset = glm::vec3(sumvector.x, sumvector.y, sumvector.z);
-        camera.target_ = offset;
-        */
+        camera.target_ -= camera.position_;
+
+        // stupid transform implementation. Only works when +y is true up
+        float sin_t = std::sin(distance);
+        float cos_t = std::cos(distance);
+
+        float target_x = cos_t * camera.target_.x - sin_t * camera.target_.z;
+        float target_z = sin_t * camera.target_.x + cos_t * camera.target_.z;
+
+        camera.target_.x = target_x;
+        camera.target_.z = target_z;
+
+        camera.target_ += camera.position_;
     }
 
     void moveLeft(Camera &camera, float distance) override
@@ -114,10 +120,16 @@ public:
 class PanningController : public CameraController
 {
 public:
+    // TODO: performance wins: add "isRotated_" camera flag, so we don't need to
+    //       compute "right" vector every time
     void moveRight(Camera &camera, float distance) override 
     {
-        camera.position_.x += distance;    
-        camera.target_.x += distance;
+        glm::vec3 forward = camera.target_ - camera.position_;
+        glm::vec3 right = glm::cross(forward, glm::vec3(0.0f, 1.0f, 0.0f));
+        right = glm::normalize(right);
+
+        camera.position_ += distance * right;    
+        camera.target_ += distance * right;
     }
 
     void moveLeft(Camera &camera, float distance) override
@@ -127,8 +139,13 @@ public:
 
     void moveUp(Camera &camera, float distance) override
     {   
-        camera.position_.y += distance;
-        camera.target_.y += distance;
+        glm::vec3 forward = camera.target_ - camera.position_;
+        glm::vec3 right = glm::cross(forward, glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::vec3 trueUp = glm::cross(right, forward);
+        trueUp = glm::normalize(trueUp);
+
+        camera.position_ += distance * trueUp;
+        camera.target_ += distance * trueUp;
     }
 
     void moveDown(Camera &camera, float distance) override
